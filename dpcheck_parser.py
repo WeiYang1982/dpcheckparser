@@ -6,6 +6,7 @@
 @time:2022/09/13
 """
 import jinja2
+import os
 from pandas import DataFrame
 
 from config_manager import get_config
@@ -66,7 +67,7 @@ def send_email(html_content):
         "attachment": "",
     }
     mail = SendEmail(mail_info)
-    mail.send_mail("第三方依赖报扫描报告:dependency_check", html_content)
+    mail.send_mail("第三方依赖扫描报告:dependency_check", html_content)
 
 
 if __name__ == '__main__':
@@ -94,8 +95,9 @@ if __name__ == '__main__':
     result.insert(1, 'owner', owner)
     result.rename(columns={'package_name': 'package', 'cpe_configuration': 'vulnerability_id'}, inplace=True)
     result = result.reset_index(drop=True)
-
-    result.to_excel("result.xlsx")
+    if not os.path.exists("target"):
+        os.mkdir("target")
+    result.to_excel("target" + os.sep + "result.xlsx")
 
     with open('dependency_check_test_report.html', 'r', encoding='utf-8') as f:
         template_file = f.read()
