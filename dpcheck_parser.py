@@ -20,7 +20,7 @@ app = FeiShuApp()
 
 def get_dp_check_report_url():
     job_name = get_config().get('check', 'jenkins_job')
-    report_url = JenkinsTools().get_job_last_success_url(job_name)
+    report_url = JenkinsTools().get_job_last_build_url(job_name)
     return report_url
 
 
@@ -90,20 +90,23 @@ if __name__ == '__main__':
     tmp_result = tmp_result[[str(x[0]) not in str(x[1]) and str(x[2]) not in str(x[3]) for x in
                              zip(tmp_result['package'], tmp_result['package_name'],
                                  tmp_result['vulnerability_id'], tmp_result['cpe_configuration'])]]
-    result = tmp_result.drop(axis=1, columns=['package', 'vulnerability_id']).sort_values(
-        by=['owner', 'module', 'level'], axis=0)
-    owner = result['owner']
-    result.pop('owner')
-    result.insert(1, 'owner', owner)
-    result.rename(columns={'package_name': 'package', 'cpe_configuration': 'vulnerability_id'}, inplace=True)
-    result = result.reset_index(drop=True)
-    if not os.path.exists("target"):
-        os.mkdir("target")
-    result.to_excel("target" + os.sep + "result.xlsx")
+    if tmp_result.shape != (0, 0):
+        result = tmp_result.drop(axis=1, columns=['package', 'vulnerability_id']).sort_values(
+            by=['owner', 'module', 'level'], axis=0)
+        owner = result['owner']
+        result.pop('owner')
+        result.insert(1, 'owner', owner)
+        result.rename(columns={'package_name': 'package', 'cpe_configuration': 'vulnerability_id'}, inplace=True)
+        result = result.reset_index(drop=True)
+        if not os.path.exists("target"):
+            os.mkdir("target")
+        result.to_excel("target" + os.sep + "result.xlsx")
 
-    with open('dependency_check_test_report.html', 'r', encoding='utf-8') as f:
-        template_file = f.read()
-    template = jinja2.Template(template_file)
-    html_content = template.render(result_list=result)
+        with open('dependency_check_test_report.html', 'r', encoding='utf-8') as f:
+            template_file = f.read()
+        template = jinja2.Template(template_file)
+        html_content = template.render(result_list=result)
     # html_content = result.to_html('result.html', encoding='utf-8', col_space=100, na_rep="0", index=False)
+    else:
+        html_content = "测试通过"
     send_email(html_content)
