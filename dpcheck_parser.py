@@ -20,7 +20,7 @@ app = FeiShuApp()
 
 def get_dp_check_report_url():
     job_name = get_config().get('check', 'jenkins_job')
-    report_url = JenkinsTools().get_job_last_build_url(job_name)
+    report_url = JenkinsTools().get_job_last_success_url(job_name)
     return report_url
 
 
@@ -71,8 +71,10 @@ def send_email(html_content):
 
 
 if __name__ == '__main__':
-    url = get_dp_check_report_url() + '/artifact/dependency-check-report.html'
-    # url = 'http://ci-bj.mycyclone.com:8080/job/TestGroup/view/%E5%AE%89%E5%85%A8%E6%89%AB%E6%8F%8F/job/dependency_check/156/artifact/dependency-check-report.html'
+    if os.path.exists('dependency-check-report.html'):
+        url = './dependency-check-report.html'
+    else:
+        url = get_dp_check_report_url() + '/artifact/dependency-check-report.html'
     level_threshold = get_config().get('check', 'level_threshold').split(",")
 
     resource_result = dp_report_parser(url)
