@@ -59,7 +59,7 @@ def send_email(html_content):
     mail_info = {
         "host": get_config().get('mail', 'server_host'),
         "from_user": get_config().get('mail', 'from_user'),
-        "from_pwd": 'Hp%#Htvk7s',
+        "from_pwd": get_config().get('mail', 'from_pwd'),
         "to_user": get_config().get('mail', 'to_user'),
         "cc_user": get_config().get('mail', 'cc_user'),
         "attachment_path": "",
