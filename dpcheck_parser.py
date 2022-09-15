@@ -59,7 +59,7 @@ def send_email(html_content):
     mail_info = {
         "host": get_config().get('mail', 'server_host'),
         "from_user": get_config().get('mail', 'from_user'),
-        "from_pwd": get_config().get('mail', 'from_pwd'),
+        "from_pwd": 'Hp%#Htvk7s',
         "to_user": get_config().get('mail', 'to_user'),
         "cc_user": get_config().get('mail', 'cc_user'),
         "attachment_path": "",
@@ -100,6 +100,6 @@ if __name__ == '__main__':
     with open('dependency_check_test_report.html', 'r', encoding='utf-8') as f:
         template_file = f.read()
     template = jinja2.Template(template_file)
-    html_content = result.to_html('result.html', encoding='utf-8', col_space=100, na_rep="0", index=False)
     html_content = template.render(result_list=result)
+    # html_content = result.to_html('result.html', encoding='utf-8', col_space=100, na_rep="0", index=False)
     send_email(html_content)
