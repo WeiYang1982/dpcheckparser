@@ -441,7 +441,9 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
 <h1>第三方依赖扫描报告:dependency_check</h1>
 
 
-<h2>Results</h2>
+{% for result_list in result_lists %}
+<br>
+<h2>{{ result_list['owner'] }} 团队测试结果</h2>
 <table id="results-table">
     <thead id="results-table-head">
     <tr>
@@ -455,7 +457,7 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
     </tr>
     </thead>
     <tbody class="results-table-row">
-    {% for key, value in result_list.iterrows() %}
+    {% for key, value in result_list['result'].iterrows() %}
     <tr>
         <td class="x_col-result">{{ value['module'] }}</td>
         <td>{{ value['owner'] }}</td>
@@ -481,7 +483,9 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
     </tr>
     {% endfor %}
     </tbody>
-
 </table>
+<br>
+<br>
+{% endfor %}
 </body>
 </html>

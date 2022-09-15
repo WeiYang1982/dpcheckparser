@@ -20,7 +20,7 @@ app = FeiShuApp()
 
 def get_dp_check_report_url():
     job_name = get_config().get('check', 'jenkins_job')
-    report_url = JenkinsTools().get_job_last_build_url(job_name)
+    report_url = JenkinsTools().get_job_last_success_url(job_name)
     return report_url
 
 
@@ -100,12 +100,18 @@ if __name__ == '__main__':
         result = result.reset_index(drop=True)
         if not os.path.exists("target"):
             os.mkdir("target")
+        result_list = []
+        owners = result['owner'].drop_duplicates().to_list()
+        for owner in owners:
+            owner_result = result.groupby(result['owner']).get_group(owner)
+            owner_result.to_excel("target" + os.sep + "result_%s.xlsx" % owner)
+            result_list.append({"owner": owner, "result": owner_result})
         result.to_excel("target" + os.sep + "result.xlsx")
 
         with open('dependency_check_test_report.html', 'r', encoding='utf-8') as f:
             template_file = f.read()
         template = jinja2.Template(template_file)
-        html_content = template.render(result_list=result)
+        html_content = template.render(result_lists=result_list)
     # html_content = result.to_html('result.html', encoding='utf-8', col_space=100, na_rep="0", index=False)
     else:
         html_content = "测试通过"
