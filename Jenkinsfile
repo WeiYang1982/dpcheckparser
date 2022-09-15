@@ -13,7 +13,6 @@ pipeline {
                 script {
                     dockerImage = docker.build("${docker_registry}/test_project/${image_name}:latest",
                             "--label \"GIT_COMMIT=${env.GIT_COMMIT}\""
-                            + " --build-arg test_group=${test_group} --build-arg test_env=${test_env}"
                             + " ."
                     )
                 }
