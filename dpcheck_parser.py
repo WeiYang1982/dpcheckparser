@@ -7,6 +7,7 @@
 """
 import jinja2
 import os
+import datetime
 from pandas import DataFrame
 
 from config_manager import get_config
@@ -91,6 +92,8 @@ if __name__ == '__main__':
                              zip(tmp_result['package'], tmp_result['package_name'],
                                  tmp_result['vulnerability_id'], tmp_result['cpe_configuration'])]]
     if tmp_result.shape != (0, 0):
+        filename = "第三方依赖扫描结果%s" % datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+        file_token = app.create_sheet_file(filename, get_config().get('feishu', 'folder_token'))
         result = tmp_result.drop(axis=1, columns=['package', 'vulnerability_id']).sort_values(
             by=['owner', 'module', 'level'], axis=0)
         owner = result['owner']
@@ -105,6 +108,12 @@ if __name__ == '__main__':
         for owner in owners:
             owner_result = result.groupby(result['owner']).get_group(owner)
             owner_result.to_excel("target" + os.sep + "result_%s.xlsx" % owner)
+            try:
+                sheet_token = app.create_sheet(file_token, "{}团队测试结果".format(owner))
+                app.insert_sheet_contents(file_token, sheet_token, owner_result.values.tolist())
+            except Exception as e:
+                print("填写飞书文档失败！")
+                print(e)
             result_list.append({"owner": owner, "result": owner_result})
         result.to_excel("target" + os.sep + "result.xlsx")
 

@@ -476,7 +476,8 @@ function filterTable(elem) { // eslint-disable-line no-unused-vars
             {% endfor %}
         </td>
         <td>
-            {% for item in value['vulnerabilities'] %}
+            {% set vulnerabilities = value['vulnerabilities'].split('\n') %}
+            {% for item in vulnerabilities %}
                 {{ item }}<br/>
             {% endfor %}
         </td>

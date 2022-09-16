@@ -74,7 +74,7 @@ class HTMLParser:
             #     level = tmp_scores[score_index][12:][:-6]
             #     tmp_num.append({num.text: level})
                 tmp_num.append(num.text)
-            target_result.append(tmp_num)
+            target_result.append("\n".join(tmp_num))
         return target_result
 
 
