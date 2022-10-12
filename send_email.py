@@ -41,7 +41,7 @@ if __name__ == '__main__':
     mail_info = {
         "host": "smtp.partner.outlook.cn",
         "from_user": "wei.yang@cyclone-robotics.com",
-        "from_pwd": "N!WizZ5KE&",
+        "from_pwd": "",
         "to_user": "wei.yang@cyclone-robotics.com",
         "cc_user": "tangyong.zhang@cyclone-robotics.com",
         # "to_user": ["xiaotong.zhang@cyclone-robotics.com"],
